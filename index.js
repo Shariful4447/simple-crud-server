@@ -32,6 +32,14 @@ async function run() {
     const database = client.db("usersDB");
     const userCollection = database.collection("users");
 
+
+    //get the user
+    app.get("/users", async (req, res) => {
+        const cursor = userCollection.find()
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+
     //coneect the server side to client side for data
     app.post('/users', async (req, res) => {
         const user = req.body;
