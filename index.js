@@ -40,6 +40,15 @@ async function run() {
         res.send(result);
     })
 
+    //get specific user
+
+    app.get("/users/:id", async (req, res) =>{
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        const user = await userCollection.findOne(query);
+        res.send(user);
+    })
+
     //coneect the server side to client side for data
     app.post('/users', async (req, res) => {
         const user = req.body;
@@ -47,6 +56,24 @@ async function run() {
         const result = await userCollection.insertOne(user);
         res.send(result);
     });
+
+    //Update the user
+
+    app.put('/users/:id', async (req, res) =>{
+        const id = req.params.id;
+        const user = req.body;
+        console.log(id, user);
+        const filter ={_id: new ObjectId(id)}
+        const options = {upsert : true}
+        const updatedUser ={
+            $set: {
+                name : user.name,
+                email: user.email
+            } 
+        }
+        const result = await userCollection.updateOne(filter,updatedUser,options);
+        res.send(result);
+    })
 
     //Delete the user
     app.delete('/users/:id', async (req, res) => {
